@@ -3,18 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+// 引入el
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import Element from 'element-ui';
-Vue.use(Element, { size: 'small', zIndex: 3000 });
+
 Vue.use(ElementUI);
-
-// new Vue({
-//   el: '#app',
-//   render: h => h(App)
-// });
-
-
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

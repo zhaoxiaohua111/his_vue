@@ -131,7 +131,6 @@
   .el-header {
     background-color: white;
     color: #333;
-    text-align: center;
     line-height: 60px;
   }
   .el-footer {

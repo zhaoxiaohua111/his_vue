@@ -10,7 +10,21 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/': {
+        target: 'http://localhost:8080/', // 真实服务器的接口地址 
+        //secure: true, // 如果是 https ,需要开启这个选项
+        changeOrigin: true, // 是否支持跨域请求?肯定是
+        pathRewirte: {
+          // 这里是追加链接,比如真实接口里包含了 /,就需要这样配置.
+
+          '/^': '/', 
+          // 等价于 
+          // step 1  /api = http://localhost:8080/
+          // step 2 /^api = /api + api == http://localhost:8080/api
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
