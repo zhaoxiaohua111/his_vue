@@ -28,20 +28,34 @@ export default {
      }
     }
   },
-  methods:{
-      onSubmit(){
-          this.axios({
-            mothod:'post',
-            url:'http://localhost:8090',
-            data:this.loginForm
-          }).then(function (response) {
-          console.log(response+"请求成功");
+methods:{
+      onSubmit:function(){
+          //console/log('用户登录提交!');
+          var this_=this
+          this_.axios({
+          method: 'post',
+          url: '/userLogin',
+          data: this.loginForm
+         })
+         .then(function (response) {
+        //console.log(response.data.msg+"响应成功");
+        if(response.data.msg=='登陆成功')
+        {
+          //跳转到主页，用户信息显示
+          this_.$router.replace("/first")
+          //用户信息保存到浏览器中
+          sessionStorage.setItem("username",response.data.userInfo.realname)
+          console.log(response.data.userInfo.realname)
+
+        }
         })
-        .catch(function (error) {
-          console.log(error+"服务器失败");
-        });
-      }
-  }
+      .catch(function (error) {
+        console.log(error+"请求服务器出错");
+      });
+     }
+   }
+
+
 }
 </script>
 
