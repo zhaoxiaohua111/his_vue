@@ -1,32 +1,59 @@
 <template>
-  <el-container style="height: 500px; border: 1px solid #eee">
-     <el-header style="text-align: center; font-size: 12px;background:pink">
-      header区
-      <i class="el-icon-star-on" style="font-size:20px;color:red" ></i>
+  <el-container style="height: 800px; border: 1px solid #eee">
+     <el-header class="header_box">
+      <div class="logoTitle">健康云his平台</div>
       <!--<el-button type="primary" icon="el-icon-search">搜索</el-button>
         <el-link href="https://baidu.com" target="_blank">百度一下</el-link>
       -->
-      <div style="text-align:right">
+      <div style="text-align:right;margin-top:20px">
         <router-link to="/login">{{realname}}</router-link>
         <el-link :v-show="showflag" @click="logOut">退出</el-link>
       </div>
       
      </el-header>
      <el-row style="height:300px">
-       <el-col :span="4" >
+       <el-col :span="3" >
          <el-aside  class="left_box" >
-           left -左侧区
+           <el-menu
+      default-active="2"
+      class="el-menu-vertical-demo"
+      @open="handleOpen"
+      @close="handleClose"
+      background-color="#027db4"
+      text-color="#fff"
+      active-text-color="#ffd04b">
+            <template v-for="ul_one in this.$router.options.routes">
+              <el-submenu :index="ul_one.path" :key="ul_one.path" v-if="ul_one.hidden==true">
+                <template slot="title">
+                   <i class="el-icon-location"></i>
+                   <span>{{ul_one.name}}</span>
+                </template>
+                <el-menu-item :index="ul_two.path" :key="ul_two.path" v-for="ul_two in ul_one.children" @click="addTab(editableTabsValue)">
+                  {{ul_two.name}}
+                </el-menu-item>
+               </el-submenu>
+            </template>
+            </el-menu>
          </el-aside>
        </el-col>
-       <el-col :span="20">
+       <el-col :span="21">
           <el-main class="main_box" >
-            hello-main区
+               <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab" style="border:1px solid;height:300px">
+                <el-tab-pane
+                  v-for="item in editableTabs"
+                  :key="item.name"
+                  :label="item.title"
+                  :name="item.name"
+                >
+                  {{item.content}}
+                </el-tab-pane>
+              </el-tabs>
           </el-main>
        </el-col> 
      </el-row>
     
    
-    <el-footer style="background:lightblue">
+    <el-footer style="background-color:#027db4;height:300px">
     footer区
     </el-footer>
 
@@ -40,16 +67,58 @@ export default {
   data () {
     return {
      'realname':sessionStorage.getItem("username")==null?'登录':sessionStorage.getItem("username"),
-     'showflag':sessionStorage.getItem("username")==null?false:'退出'
-    }
+     'showflag':sessionStorage.getItem("username")==null?false:'退出',
+     editableTabsValue: '2',
+        editableTabs: [{
+          title: 'Tab 1',
+          name: '1',
+          content: 'Tab 1 content'
+        }, {
+          title: 'Tab 2',
+          name: '2',
+          content: 'Tab 2 content'
+        }],
+        tabIndex: 2
+      }
   },
   methods:{
     logOut:function(){
     //退出
     this.$router.replace("/login")
     sessionStorage.removeItem("username")
-
-    }
+    },
+     handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
+       addTab(targetName) {
+        let newTabName = ++this.tabIndex + '';
+        this.editableTabs.push({
+          title: 'New Tab',
+          name: newTabName,
+          content: 'New Tab content'
+        });
+        this.editableTabsValue = newTabName;
+      },
+      removeTab(targetName) {
+        let tabs = this.editableTabs;
+        let activeName = this.editableTabsValue;
+        if (activeName === targetName) {
+          tabs.forEach((tab, index) => {
+            if (tab.name === targetName) {
+              let nextTab = tabs[index + 1] || tabs[index - 1];
+              if (nextTab) {
+                activeName = nextTab.name;
+              }
+            }
+          });
+        }
+        
+        this.editableTabsValue = activeName;
+        this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+      }
   }
 }
 </script>
@@ -59,11 +128,29 @@ export default {
  .left_box{
    width:200px !important;
    background:#DCDFE6;
-   height:300px;
+   /* height:300px; */
  }
  .main_box{
-   background:lightgreen;
-   height:300px;
+   background: #dfe9e8;
+   height:600px;
  }
-
+ .logoTitle{
+  font-size: 30px;
+  text-align: left;
+  line-height: 60px;
+  color: antiquewhite;
+  float: left;
+}
+.el-col-3{
+  width: 10.5%;
+}
+.el-col-21{
+  width: 89.5%;
+}
+.header_box{
+   /* background-size: 100% 100%;  */
+   height:60px;
+   text-align: center;
+   background-color:#74adc7;
+}
 </style>
