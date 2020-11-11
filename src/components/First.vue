@@ -28,7 +28,7 @@
                    <i class="el-icon-location"></i>
                    <span>{{ul_one.name}}</span>
                 </template>
-                <el-menu-item :index="ul_two.path" :key="ul_two.path" v-for="ul_two in ul_one.children" @click="addTab(editableTabsValue)">
+                <el-menu-item :index="ul_two.path" :key="ul_two.path" v-for="ul_two in ul_one.children" @click="addTab(ul_two.path)">
                   {{ul_two.name}}
                 </el-menu-item>
                </el-submenu>
@@ -38,14 +38,14 @@
        </el-col>
        <el-col :span="21">
           <el-main class="main_box" >
-               <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab" style="border:1px solid;height:300px">
-                <el-tab-pane
+<el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick" style="border:1px solid;height:300px">                <el-tab-pane
                   v-for="item in editableTabs"
                   :key="item.name"
                   :label="item.title"
                   :name="item.name"
                 >
                   {{item.content}}
+                  <router-view/>
                 </el-tab-pane>
               </el-tabs>
           </el-main>
@@ -81,11 +81,12 @@ export default {
         tabIndex: 2
       }
   },
-  methods:{
+   methods:{
     logOut:function(){
     //退出
     this.$router.replace("/login")
     sessionStorage.removeItem("username")
+
     },
      handleOpen(key, keyPath) {
         console.log(key, keyPath);
@@ -93,33 +94,72 @@ export default {
       handleClose(key, keyPath) {
         console.log(key, keyPath);
       },
-       addTab(targetName) {
-        let newTabName = ++this.tabIndex + '';
-        this.editableTabs.push({
-          title: 'New Tab',
-          name: newTabName,
-          content: 'New Tab content'
-        });
-        this.editableTabsValue = newTabName;
-      },
-      removeTab(targetName) {
-        let tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
-        if (activeName === targetName) {
-          tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              let nextTab = tabs[index + 1] || tabs[index - 1];
-              if (nextTab) {
-                activeName = nextTab.name;
+      //添加tab页
+       addTab(path) {
+         console.log(path+"******")
+         if(path)
+         {//根据组件的路径查找组件
+         let compt=null 
+           for(let r of this.$router.options.routes)
+          {   if(r.children){
+                compt=r.children.find(fun=>fun.path==path)
+                break;
+                //function fun(){}
+                //fun=>{}
               }
-            }
-          });
+              
+           }
+           console.log(compt+"****组件**")
+           //判断tab中是否有当前要添加的组件
+           if(compt){
+              if(!this.editableTabs.some(fun=>fun.name==compt.path))
+              {
+                //将组件封装成tab页
+                //let newTabName = ++this.tabIndex + '';
+                    this.editableTabs.push({
+                      title: compt.name,
+                      name: compt.path,
+                      route: compt.path
+                    });
+                   
+              }
+               this.editableTabsValue = compt.path;
+                    //组件显示(路由跳转)
+                this.$router.push(compt.path)
+             
+          }
+         
+         }
+      },
+   //编辑tab
+   handleTabsEdit(targetName, action) {
+        console.log(targetName+"@@@@@@@@@@@@@@@@@@@")
+        if (action === 'remove') {
+          let tabs = this.editableTabs;
+          let activeName = this.editableTabsValue;
+          if (activeName === targetName) {
+            tabs.forEach((tab, index) => {
+              if (tab.name === targetName) {
+                let nextTab = tabs[index + 1] || tabs[index - 1];
+                if (nextTab) {
+                  activeName = nextTab.name;
+                }
+              }
+            });
+          }
+          
+          this.editableTabsValue = activeName;
+          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+          //路由跳转
+          thihs.$router.push(activeName)
         }
-        
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-      }
-  }
+      },
+    handleClick(tab,event)
+          {
+            console.log(tab+"当前");
+            this.$router.push(tab.name);
+          }
+  },
 }
 </script>
 
