@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height: 100%; background:lightblue">
+  <el-container style="height: 100%;">
     
        A-组件
     

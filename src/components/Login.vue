@@ -76,8 +76,8 @@ methods:{
     margin-left: 36%;
     margin-top: 10%;
   background-color: rgba(200,200,200,0.5);
-  boder-color:rgba(200,200,200,0.5);
-  boder-radius:10px
+  border-color:rgba(200,200,200,0.5);
+  border-radius:10px
 }
 .login_form{
     width:340px;

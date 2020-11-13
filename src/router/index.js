@@ -4,6 +4,8 @@ import First from '@/components/First'
 import login from '@/components/Login'
 import A from '@/components/A'
 import B from '@/components/B'
+import User from '@/components/User'
+import Dept from '@/components/Dept'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -84,19 +86,16 @@ export default new Router({
     //     // {path:'/b',name:'费用管理',component:B}
     //   ]
     // },
-    // {
-    //   path: '/first',
-    //   name: '系统管理',
-    //   component: First,
-    //   hidden:true,
-    //   children:[
-    //     // {path:'/a',name:'用户管理',component:A},
-    //     // {path:'/b',name:'科室管理',component:B},
-    //     // {path:'/a',name:'挂号登记管理',component:A},
-    //     // {path:'/b',name:'疾病管理',component:B},
-    //     // {path:'/a',name:'药品价格管理',component:A}
-    //   ]
-    // },
+     {
+      path: '/first',
+      name: '系统管理',
+      component: First,
+      hidden:true,
+      children:[
+        {path:'/user',name:'用户管理',component:User},
+        {path:'/dept',name:'科室管理',component:Dept},
+      ]
+    },
     {path:"",redirect:"/login"}
   ],
   // mode: 'history'

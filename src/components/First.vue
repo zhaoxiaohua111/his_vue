@@ -1,21 +1,18 @@
 <template>
-  <el-container style="height: 800px; border: 1px solid #eee">
+  <el-container style="height: 600px; border: 1px solid #eee">
      <el-header class="header_box">
       <div class="logoTitle">健康云his平台</div>
-      <!--<el-button type="primary" icon="el-icon-search">搜索</el-button>
-        <el-link href="https://baidu.com" target="_blank">百度一下</el-link>
-      -->
       <div style="text-align:right;margin-top:20px">
         <router-link to="/login">{{realname}}</router-link>
         <el-link :v-show="showflag" @click="logOut">退出</el-link>
       </div>
       
      </el-header>
-     <el-row style="height:300px">
+     <el-row style="background: #027db4;">
        <el-col :span="3" >
          <el-aside  class="left_box" >
            <el-menu
-      default-active="2"
+      default-active="1"
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
@@ -38,7 +35,8 @@
        </el-col>
        <el-col :span="21">
           <el-main class="main_box" >
-<el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick" style="border:1px solid;height:300px">                <el-tab-pane
+      <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick" >                
+        <el-tab-pane
                   v-for="item in editableTabs"
                   :key="item.name"
                   :label="item.title"
@@ -53,8 +51,8 @@
      </el-row>
     
    
-    <el-footer style="background-color:#027db4;height:300px">
-    footer区
+    <el-footer  class="myfooter">
+
     </el-footer>
 
   </el-container>
@@ -69,15 +67,7 @@ export default {
      'realname':sessionStorage.getItem("username")==null?'登录':sessionStorage.getItem("username"),
      'showflag':sessionStorage.getItem("username")==null?false:'退出',
      editableTabsValue: '2',
-        editableTabs: [{
-          title: 'Tab 1',
-          name: '1',
-          content: 'Tab 1 content'
-        }, {
-          title: 'Tab 2',
-          name: '2',
-          content: 'Tab 2 content'
-        }],
+        editableTabs: [],
         tabIndex: 2
       }
   },
@@ -103,7 +93,11 @@ export default {
            for(let r of this.$router.options.routes)
           {   if(r.children){
                 compt=r.children.find(fun=>fun.path==path)
-                break;
+                //当前路径未找到组件，需继续查找，直到找到或循环执行完毕
+                if(compt){
+                  break;
+                }
+                
                 //function fun(){}
                 //fun=>{}
               }
@@ -166,8 +160,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
  .left_box{
-   width:200px !important;
-   background:#DCDFE6;
+   width:100% !important;
+   background:#027db4;
    /* height:300px; */
  }
  .main_box{
@@ -192,5 +186,16 @@ export default {
    height:60px;
    text-align: center;
    background-color:#74adc7;
+}
+.myfooter{
+  background-color:#74adc7;
+  height: 70px;
+  width: 100%;
+}
+.el-submenu .el-menu-item {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 45px;
+    min-width: 100px;
 }
 </style>
