@@ -11,6 +11,9 @@
        </el-row>
      </el-header>
      <el-main>
+       <div style="text-align:left">
+         <el-button type="warning" icon="el-icon-folder-add" @click="dialogVisible = true">新增科室</el-button>
+       </div>
            <el-table
               ref="multipleTable"
               :data="tableData"
@@ -56,10 +59,22 @@
                 </template>
               </el-table-column>
             </el-table>
-
-
      </el-main>
-     
+     <el-dialog
+    title="添加用户"
+    :visible.sync="dialogVisible"
+    width="40%">
+    <span>
+      <el-form ref="addForm" :model="addForm" label-width="80px">
+            <el-input clas="myinput" v-model="addForm.deptcode" placeholder="请输入科室编码"></el-input> 
+            <el-input clas="myinput" v-model="addForm.deptname" placeholder="请输入科室名"></el-input>                                
+      </el-form>
+    </span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary"  @click="addDeptInfo">确 定</el-button>
+    </span>
+  </el-dialog>
 
   </el-container>
 </template>
@@ -71,7 +86,12 @@ export default {
     return {
         tableData: [],
         multipleSelection:[],
-        keywords:''
+        keywords:'',
+        dialogVisible:false,
+        addForm:{
+          deptcode:'',
+          deptname:'',
+        },
         }
     },
   methods:{
@@ -116,6 +136,21 @@ export default {
        //根据条件查询用户信息
       selectDeptByName(){
         this.getDepts(this.keywords)
+    },
+    addDeptInfo:function(){
+      var this_=this;
+      if(this.addForm.deptcode!=null&&this.addForm.deptcode!=''
+      &&this.addForm.deptname!=null&&this.addForm.deptname!=''){
+        this.axios({
+          method:'post',
+          url:'/addDept',
+          data:this.addForm
+        }).then(function(){
+          alert("部门添加成功");
+        this_.dialogVisible=false
+        this_.getDepts('')
+        });
+      }
     },
   },
   mounted:function(){//页面加载完成执行
